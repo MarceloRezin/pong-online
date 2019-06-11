@@ -1,0 +1,24 @@
+{
+  "name": "pong-online",
+  "version": "0.0.1",
+  "description": "Implementação online do jogo pong",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarceloRezin/pong-online.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarceloRezin/pong-online/issues"
+  },
+  "homepage": "https://github.com/MarceloRezin/pong-online#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
+  }
+}
