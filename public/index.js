@@ -28,6 +28,21 @@ var pontuacaoP2;
 var bolaX;
 var bolaY;
 
+var enumStatus = {
+  ESPERANDO: 'ESPERANDO'
+};
+
+var status = enumStatus.ESPERANDO;
+
+
+var loader = [
+  [PRETO, '#28292f', '#28292f', '#28292f'],
+  ['#28292f', PRETO, '#28292f', '#28292f'],
+  ['#28292f', '#28292f', '#28292f', PRETO],
+  ['#28292f', '#28292f', PRETO, '#28292f']
+];
+var posLoader = 0;
+
 var socket = io();
 
 socket.on('INIT_PARAMS', function (params) {
@@ -120,6 +135,35 @@ function desenhaDivisao() {
     }
 }
 
+function desenhaLoadScreen() {
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillRect (0, 0, LARGURA, ALTURA);
+
+    ctx.fillStyle = PRETO;
+    ctx.font = '30px Courier New';
+    ctx.fillText('Esperando outro player, aguarde ...', 100, ALTURA / 2 + 50);
+
+    var matrizCor = loader[posLoader];
+
+    ctx.fillStyle = matrizCor[0];
+    ctx.fillRect(LARGURA / 2 - 42, ALTURA / 2 - 102, 40, 40);
+
+    ctx.fillStyle = matrizCor[1];
+    ctx.fillRect(LARGURA / 2  + 2, ALTURA / 2 - 102, 40, 40);
+
+    ctx.fillStyle = matrizCor[2];
+    ctx.fillRect(LARGURA / 2 - 42, ALTURA / 2 - 58, 40, 40);
+
+    ctx.fillStyle = matrizCor[3];
+    ctx.fillRect(LARGURA / 2  + 2, ALTURA / 2 - 58, 40, 40);
+
+    posLoader ++;
+
+    if(posLoader === loader.length){
+        posLoader = 0;
+    }
+}
+
 function render() {
     desenhaFundo();
     desenhaDivisao();
@@ -130,6 +174,11 @@ function render() {
 
     desenhaPontuacaoPlayer1();
     desenhaPontuacaoPlayer2();
+
+    if(status === enumStatus.ESPERANDO){
+        desenhaLoadScreen();
+        setTimeout(render, 100); //10 FPS
+    }
 }
 
 /*
