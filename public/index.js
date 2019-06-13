@@ -42,6 +42,7 @@ var loader = [
   ['#28292f', '#28292f', PRETO, '#28292f']
 ];
 var posLoader = 0;
+const TAMALHO_LOADER = 40;
 
 var socket = io();
 
@@ -135,9 +136,13 @@ function desenhaDivisao() {
     }
 }
 
-function desenhaLoadScreen() {
+function fundoBranco() {
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.fillRect (0, 0, LARGURA, ALTURA);
+}
+
+function desenhaLoadScreen() {
+    fundoBranco();
 
     ctx.fillStyle = PRETO;
     ctx.font = '30px Courier New';
@@ -146,16 +151,16 @@ function desenhaLoadScreen() {
     var matrizCor = loader[posLoader];
 
     ctx.fillStyle = matrizCor[0];
-    ctx.fillRect(LARGURA / 2 - 42, ALTURA / 2 - 102, 40, 40);
+    ctx.fillRect(LARGURA / 2 - 84, ALTURA / 2 - 60, TAMALHO_LOADER, TAMALHO_LOADER);
 
     ctx.fillStyle = matrizCor[1];
-    ctx.fillRect(LARGURA / 2  + 2, ALTURA / 2 - 102, 40, 40);
+    ctx.fillRect(LARGURA / 2 - 41, ALTURA / 2 - 60, TAMALHO_LOADER, TAMALHO_LOADER);
 
     ctx.fillStyle = matrizCor[2];
-    ctx.fillRect(LARGURA / 2 - 42, ALTURA / 2 - 58, 40, 40);
+    ctx.fillRect(LARGURA / 2  + 1, ALTURA / 2 - 60, TAMALHO_LOADER, TAMALHO_LOADER);
 
     ctx.fillStyle = matrizCor[3];
-    ctx.fillRect(LARGURA / 2  + 2, ALTURA / 2 - 58, 40, 40);
+    ctx.fillRect(LARGURA / 2  + 44, ALTURA / 2 - 60, TAMALHO_LOADER, TAMALHO_LOADER);
 
     posLoader ++;
 
