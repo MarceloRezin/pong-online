@@ -40,6 +40,18 @@ io.on('connection', function(socket){
 
     socket.emit('INIT_PARAMS', engine.getInitParams());
 
+    socket.on('CONFIRM_INIT', function () {
+        let player = getPlayerById(id);
+
+        if(player != null){
+            player.init = true;
+
+            if(p1.init === true && p2.init === true){
+                console.log('COMEÇA');
+            }
+        }
+    });
+
     socket.on('disconnect', function(){
         console.log('user disconnected');
         //TODO Remover player

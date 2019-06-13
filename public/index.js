@@ -74,6 +74,8 @@ socket.on('INIT_PARAMS', function (params) {
 
     init();
     render();
+
+    socket.emit('CONFIRM_INIT', 'true');
 });
 
 socket.on('render', function (grafico) {
