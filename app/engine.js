@@ -2,6 +2,15 @@ class Engine {
 
     constructor(){
         this.setDefault();
+        this.status = 'ESPERANDO';
+    }
+
+    getStatus(){
+        return this.status;
+    }
+
+    setStatus(status){
+        this.status = status;
     }
 
     setDefault(){
