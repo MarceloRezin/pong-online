@@ -53,8 +53,13 @@ io.on('connection', function(socket){
     });
 
     socket.on('disconnect', function(){
-        console.log('user disconnected');
-        //TODO Remover player
+        // console.log('user disconnected');
+
+        let player = getPlayerById(id);
+        if(player != null){
+            player.init = false;
+            player.id = null;
+        }
     });
 
     socket.on('UP', function(msg){
