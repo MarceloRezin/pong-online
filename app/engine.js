@@ -42,6 +42,10 @@ class Engine {
     getInitParams(){
         return this;
     }
+
+    start(io){
+        io.emit('JOGAR', '');
+    }
 }
 
 module.exports.Engine = Engine;

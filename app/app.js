@@ -48,7 +48,11 @@ io.on('connection', function(socket){
 
             if(p1.init === true && p2.init === true){
                 setTimeout(function () {
-                    socket.emit('INICIAR', '');
+                    io.emit('INICIAR', '');
+
+                    setTimeout(function () {
+                        engine.start(io);
+                    }, 2000);
                 }, 1000);
             }
         }
