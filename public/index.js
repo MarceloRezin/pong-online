@@ -81,14 +81,17 @@ socket.on('INIT_PARAMS', function (params) {
 });
 
 socket.on('INICIAR', function () {
-    console.log('ola');
     status = enumStatus.INICIANDO;
     render();
 });
 
 socket.on('JOGAR', function () {
-    console.log('Jogando');
     status = enumStatus.JOGANDO;
+});
+
+socket.on('RENDER', function (params) {
+    bolaX = params.bolaX;
+    bolaY = params.bolaY;
     render();
 });
 
