@@ -29,7 +29,9 @@ var bolaX;
 var bolaY;
 
 var enumStatus = {
-  ESPERANDO: 'ESPERANDO'
+  ESPERANDO: 'ESPERANDO',
+  INICIANDO: 'INICIANDO',
+  JOGANDO: 'JOGANDO'
 };
 
 var status = enumStatus.ESPERANDO;
@@ -78,10 +80,11 @@ socket.on('INIT_PARAMS', function (params) {
     socket.emit('CONFIRM_INIT', 'true');
 });
 
-socket.on('render', function (grafico) {
-    console.log(grafico);
+socket.on('INICIAR', function () {
+    console.log('ola');
+    status = enumStatus.INICIANDO;
+    render();
 });
-
 
 function init(){
     canvas = document.getElementById('canvas');
@@ -171,6 +174,14 @@ function desenhaLoadScreen() {
     }
 }
 
+function desenhaStartScreen() {
+    fundoBranco();
+
+    ctx.fillStyle = PRETO;
+    ctx.font = '30px Courier New';
+    ctx.fillText('Atenção! A partida vai iniciar.', 150, ALTURA / 2);
+}
+
 function render() {
     desenhaFundo();
     desenhaDivisao();
@@ -184,6 +195,11 @@ function render() {
 
     if(status === enumStatus.ESPERANDO){
         desenhaLoadScreen();
+        setTimeout(render, 100); //10 FPS
+    }
+
+    if(status === enumStatus.INICIANDO){
+        desenhaStartScreen();
         setTimeout(render, 100); //10 FPS
     }
 }

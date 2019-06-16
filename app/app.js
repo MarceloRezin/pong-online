@@ -47,7 +47,9 @@ io.on('connection', function(socket){
             player.init = true;
 
             if(p1.init === true && p2.init === true){
-                console.log('COMEÇA');
+                setTimeout(function () {
+                    socket.emit('INICIAR', '');
+                }, 1000);
             }
         }
     });
