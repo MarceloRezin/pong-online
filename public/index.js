@@ -86,6 +86,12 @@ socket.on('INICIAR', function () {
     render();
 });
 
+socket.on('JOGAR', function () {
+    console.log('Jogando');
+    status = enumStatus.JOGANDO;
+    render();
+});
+
 function init(){
     canvas = document.getElementById('canvas');
     canvas.style.border = "1px solid #000";
