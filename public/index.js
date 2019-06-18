@@ -92,6 +92,9 @@ socket.on('JOGAR', function () {
 socket.on('RENDER', function (params) {
     bolaX = params.bolaX;
     bolaY = params.bolaY;
+
+    pontuacaoP1 = params.pontuacaoP1;
+    pontuacaoP2 = params.pontuacaoP2;
     render();
 });
 

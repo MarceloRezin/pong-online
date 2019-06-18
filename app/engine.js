@@ -3,7 +3,7 @@ class Engine {
     constructor(){
         this.setDefault();
 
-        this.VELOCIDADE_BOLA = 10;
+        this.VELOCIDADE_BOLA = 25;
         this.status = 'ESPERANDO';
     }
 
@@ -37,8 +37,7 @@ class Engine {
         this.pontuacaoP1 = 0;
         this.pontuacaoP2 = 0;
 
-        this.bolaX = (this.LARGURA / 2) - (this.TAMANHO_BOLA / 2);
-        this.bolaY = (this.ALTURA / 2) - (this.TAMANHO_BOLA / 2);
+        this.resetBola();
     }
 
     getInitParams(){
@@ -60,8 +59,7 @@ class Engine {
 
     // X = raio * cos(angulo)
     toXPolar(raio, angulo){
-        return raio * Math.cos( angulo *Math.PI/180 );
-        return raio * Math.cos(angulo);
+        return raio * Math.cos( angulo * Math.PI/180 );
     }
 
     // Y = r . sin(angulo)
@@ -82,13 +80,12 @@ class Engine {
         this.io = io;
         this.io.emit('JOGAR', '');
 
-        this.definirDirecaoBola();
-
         this.render();
     }
 
     render(){
 
+        this.checkLimitesBola();
         this.moveBola();
 
         this.io.emit('RENDER', this.getRenderParams());
@@ -96,8 +93,17 @@ class Engine {
         setTimeout(this.render.bind(this), 50);
     }
 
-    definirDirecaoBola(){
-        this.DIRECAO_ATUAL = this.getRandomAngulo(null, null);
+    definirDirecaoBola(min, max){
+        this.DIRECAO_ATUAL = this.getRandomAngulo(min, max);
+    }
+
+    getRenderParams(){
+        return {
+            bolaX: this.bolaX,
+            bolaY: this.bolaY,
+            pontuacaoP1: this.pontuacaoP1,
+            pontuacaoP2: this.pontuacaoP2
+        };
     }
 
     moveBola(){
@@ -105,11 +111,42 @@ class Engine {
         this.bolaY = this.bolaY + this.toYPolar(this.VELOCIDADE_BOLA, this.DIRECAO_ATUAL);
     }
 
-    getRenderParams(){
-        return {
-            bolaX: this.bolaX,
-            bolaY: this.bolaY
-        };
+    resetBola(){
+        this.definirDirecaoBola(0, 360);
+        this.bolaX = (this.LARGURA / 2) - (this.TAMANHO_BOLA / 2);
+        this.bolaY = (this.ALTURA / 2) - (this.TAMANHO_BOLA / 2);
+    }
+
+    checkLimitesBola(){
+        if(this.bolaX < this.X_PLAYER + this.LARGURA_PLAYER){
+            if(this.bolaY + this.TAMANHO_BOLA < this.player1Y || this.bolaY > this.player1Y + this.ALTURA_PLAYER){ //Fora do player
+                //Pontuação do P2
+                this.pontuacaoP2++;
+                this.resetBola();
+            }else{
+                //Bateu no p1;
+                // 0 - 90 -- 270 - 360
+                if(this.getRandomAngulo(0, 2) < 1){
+                    this.definirDirecaoBola(12, 78);
+                }else{
+                    this.definirDirecaoBola(282, 358);
+                }
+            }
+        }else if(this.bolaX + this.TAMANHO_BOLA > this.LARGURA - this.LARGURA_PLAYER - this.X_PLAYER){
+            if(this.bolaY + this.TAMANHO_BOLA < this.player2Y || this.bolaY > this.player2Y + this.ALTURA_PLAYER){ //Fora do player
+                //Pontuação do P1
+                this.pontuacaoP1++;
+                this.resetBola();
+            }else{
+                // Bateu no p2
+                //90 - 270
+                this.definirDirecaoBola(102, 258);
+            }
+        }else if(this.bolaY < 1){ //Cima
+            this.definirDirecaoBola(0, 180);
+        }else if(this.bolaY + this.TAMANHO_BOLA > this.ALTURA){ //Baixo
+            this.definirDirecaoBola(180, 360);
+        }
     }
 }
 
