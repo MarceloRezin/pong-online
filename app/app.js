@@ -68,10 +68,26 @@ io.on('connection', function(socket){
         }
     });
 
-    socket.on('UP', function(msg){
+    socket.on('UP', function(){
+        let player = getPlayerById(id);
+        if(player != null){
+            if(player.id == p1.id){
+                engine.upP1();
+            }else{
+                engine.upP2();
+            }
+        }
     });
 
-    socket.on('DOWN', function(msg){
+    socket.on('DOWN', function(){
+        let player = getPlayerById(id);
+        if(player != null){
+            if(player.id == p1.id){
+                engine.downP1();
+            }else{
+                engine.downP2();
+            }
+        }
     });
 });
 

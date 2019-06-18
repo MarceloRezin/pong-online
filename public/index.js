@@ -95,6 +95,9 @@ socket.on('RENDER', function (params) {
 
     pontuacaoP1 = params.pontuacaoP1;
     pontuacaoP2 = params.pontuacaoP2;
+
+    player1Y = params.player1Y;
+    player2Y = params.player2Y;
     render();
 });
 
@@ -215,8 +218,3 @@ function render() {
         setTimeout(render, 100); //10 FPS
     }
 }
-
-/*
-setTimeout(function () {
-    socket.emit('teste', 'awa');
-}, 3000);*/

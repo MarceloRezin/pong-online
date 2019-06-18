@@ -3,7 +3,8 @@ class Engine {
     constructor(){
         this.setDefault();
 
-        this.VELOCIDADE_BOLA = 25;
+        this.VELOCIDADE_BOLA = 18;
+        this.PASSO_PLAYER = 60;
         this.status = 'ESPERANDO';
     }
 
@@ -80,7 +81,7 @@ class Engine {
         this.io = io;
         this.io.emit('JOGAR', '');
 
-        this.render();
+        setInterval(this.render.bind(this), 50);
     }
 
     render(){
@@ -89,8 +90,6 @@ class Engine {
         this.moveBola();
 
         this.io.emit('RENDER', this.getRenderParams());
-
-        setTimeout(this.render.bind(this), 50);
     }
 
     definirDirecaoBola(min, max){
@@ -102,7 +101,9 @@ class Engine {
             bolaX: this.bolaX,
             bolaY: this.bolaY,
             pontuacaoP1: this.pontuacaoP1,
-            pontuacaoP2: this.pontuacaoP2
+            pontuacaoP2: this.pontuacaoP2,
+            player1Y: this.player1Y,
+            player2Y: this.player2Y
         };
     }
 
@@ -146,6 +147,38 @@ class Engine {
             this.definirDirecaoBola(0, 180);
         }else if(this.bolaY + this.TAMANHO_BOLA > this.ALTURA){ //Baixo
             this.definirDirecaoBola(180, 360);
+        }
+    }
+
+    upP1(){
+        if(this.player1Y <= this.PASSO_PLAYER){
+            this.player1Y = 0;
+        }else{
+            this.player1Y-=this.PASSO_PLAYER;
+        }
+    }
+
+    downP1(){
+        if(this.player1Y + this.ALTURA_PLAYER >= this.ALTURA - this.PASSO_PLAYER){
+            this.player1Y = this.ALTURA - this.ALTURA_PLAYER;
+        }else{
+            this.player1Y+=this.PASSO_PLAYER;
+        }
+    }
+
+    upP2(){
+        if(this.player2Y <= this.PASSO_PLAYER){
+            this.player2Y = 0;
+        }else{
+            this.player2Y-=this.PASSO_PLAYER;
+        }
+    }
+
+    downP2(){
+        if(this.player2Y + this.ALTURA_PLAYER >= this.ALTURA - this.PASSO_PLAYER){
+            this.player2Y = this.ALTURA - this.ALTURA_PLAYER;
+        }else{
+            this.player2Y+=this.PASSO_PLAYER;
         }
     }
 }
