@@ -31,10 +31,14 @@ var bolaY;
 var enumStatus = {
   ESPERANDO: 'ESPERANDO',
   INICIANDO: 'INICIANDO',
-  JOGANDO: 'JOGANDO'
+  JOGANDO: 'JOGANDO',
+  FIM: 'FIM'
 };
 
 var status = enumStatus.ESPERANDO;
+
+var IS_P1;
+var vitoriaP1;
 
 
 var loader = [
@@ -49,8 +53,6 @@ const TAMALHO_LOADER = 40;
 var socket = io();
 
 socket.on('INIT_PARAMS', function (params) {
-    // console.log(params);
-
     ALTURA = params.ALTURA;
     LARGURA = params.LARGURA;
 
@@ -73,6 +75,8 @@ socket.on('INIT_PARAMS', function (params) {
 
     bolaX = params.bolaX;
     bolaY = params.bolaY;
+
+    IS_P1 = params.isP1;
 
     init();
     render();
@@ -98,6 +102,13 @@ socket.on('RENDER', function (params) {
 
     player1Y = params.player1Y;
     player2Y = params.player2Y;
+    render();
+});
+
+socket.on('FIM', function (params) {
+    status = enumStatus.FIM;
+    vitoriaP1 = params.vitoriaP1;
+
     render();
 });
 
@@ -197,6 +208,28 @@ function desenhaStartScreen() {
     ctx.fillText('Atenção! A partida vai iniciar.', 150, ALTURA / 2);
 }
 
+function desenhaFimScreen() {
+    fundoBranco();
+
+    ctx.fillStyle = PRETO;
+    ctx.font = '30px Courier New';
+    ctx.fillText('Fim da partida!', 280, ALTURA / 2);
+
+    if(vitoriaP1){
+        if(IS_P1){
+            ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+        }else{
+            ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+        }
+    }else{
+        if(IS_P1){
+            ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+        }else{
+            ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+        }
+    }
+}
+
 function render() {
     desenhaFundo();
     desenhaDivisao();
@@ -215,6 +248,11 @@ function render() {
 
     if(status === enumStatus.INICIANDO){
         desenhaStartScreen();
+        setTimeout(render, 100); //10 FPS
+    }
+
+    if(status === enumStatus.FIM){
+        desenhaFimScreen();
         setTimeout(render, 100); //10 FPS
     }
 }

@@ -38,6 +38,8 @@ class Engine {
         this.pontuacaoP1 = 0;
         this.pontuacaoP2 = 0;
 
+        this.vitoriaP1 = null;
+
         this.resetBola();
     }
 
@@ -81,12 +83,13 @@ class Engine {
         this.io = io;
         this.io.emit('JOGAR', '');
 
-        setInterval(this.render.bind(this), 50);
+        this.MAIN_LOOP = setInterval(this.render.bind(this), 50);
     }
 
     render(){
 
         this.checkLimitesBola();
+        this.checkFim();
         this.moveBola();
 
         this.io.emit('RENDER', this.getRenderParams());
@@ -179,6 +182,24 @@ class Engine {
             this.player2Y = this.ALTURA - this.ALTURA_PLAYER;
         }else{
             this.player2Y+=this.PASSO_PLAYER;
+        }
+    }
+
+    checkFim(){
+
+        let fim = false;
+        if(this.pontuacaoP1 > 9){
+            this.vitoriaP1 = true;
+            fim = true;
+        } else if(this.pontuacaoP2 > 9){
+            this.vitoriaP1 = false;
+            fim = true;
+        }
+
+        if(fim){
+            this.status = "FIM";
+            clearInterval(this.MAIN_LOOP);
+            this.io.emit('FIM', {vitoriaP1: this.vitoriaP1});
         }
     }
 }

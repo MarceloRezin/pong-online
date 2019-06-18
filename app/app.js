@@ -29,16 +29,20 @@ io.on('connection', function(socket){
     console.log('con');
 
     let id = socket.id;
+    let isP1 = false;
 
     if(!p1.id || !p2.id){
         if(p1.id){
             p2.id = id;
         }else {
             p1.id = id;
+            isP1 = true;
         }
     }
 
-    socket.emit('INIT_PARAMS', engine.getInitParams());
+    let params = engine.getInitParams();
+    params.isP1 = isP1;
+    socket.emit('INIT_PARAMS', params);
 
     socket.on('CONFIRM_INIT', function () {
         let player = getPlayerById(id);
