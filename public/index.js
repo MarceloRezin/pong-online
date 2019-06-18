@@ -230,6 +230,19 @@ function desenhaFimScreen() {
     }
 }
 
+function desenhaNomePlayer() {
+    ctx.font = '25px Courier New';
+
+    let player;
+    if(IS_P1){
+        player = 'Player 1';
+    }else{
+        player = 'Player 2';
+    }
+
+    ctx.fillText(player, LARGURA / 2  - 50, ALTURA - 10);
+}
+
 function render() {
     desenhaFundo();
     desenhaDivisao();
@@ -240,6 +253,8 @@ function render() {
 
     desenhaPontuacaoPlayer1();
     desenhaPontuacaoPlayer2();
+
+    desenhaNomePlayer();
 
     if(status === enumStatus.ESPERANDO){
         desenhaLoadScreen();
