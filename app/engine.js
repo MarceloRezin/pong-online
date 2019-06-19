@@ -3,7 +3,7 @@ class Engine {
     constructor(){
         this.setDefault();
 
-        this.VELOCIDADE_BOLA = 18;
+        this.VELOCIDADE_BOLA = 20;
         this.PASSO_PLAYER = 60;
         this.status = 'ESPERANDO';
     }
@@ -200,7 +200,15 @@ class Engine {
             this.status = "FIM";
             clearInterval(this.MAIN_LOOP);
             this.io.emit('FIM', {vitoriaP1: this.vitoriaP1});
+
+            this.p1.init = false;
+            this.p2.init = false;
         }
+    }
+
+    setPlayers(p1, p2){
+        this.p1 = p1;
+        this.p2 = p2;
     }
 }
 

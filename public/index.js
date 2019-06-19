@@ -93,7 +93,7 @@ socket.on('JOGAR', function () {
     status = enumStatus.JOGANDO;
 });
 
-socket.on('RENDER', function (params) {
+function setRenderParams(params){
     bolaX = params.bolaX;
     bolaY = params.bolaY;
 
@@ -103,6 +103,15 @@ socket.on('RENDER', function (params) {
     player1Y = params.player1Y;
     player2Y = params.player2Y;
     render();
+}
+
+socket.on('RENDER', function (params) {
+    setRenderParams(params);
+});
+
+socket.on('RESET_PARAMS', function (params) {
+    setRenderParams(params);
+    socket.emit('CONFIRM_INIT', 'true');
 });
 
 socket.on('FIM', function (params) {
@@ -125,6 +134,10 @@ function init(){
             socket.emit('UP', '');
         }else if(e.keyCode === 40){
             socket.emit('DOWN', '');
+        }else if(e.keyCode === 32){
+            if(status === enumStatus.FIM){
+                socket.emit('RESET', '');
+            }
         }
     };
 }
@@ -228,6 +241,9 @@ function desenhaFimScreen() {
             ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
         }
     }
+
+    ctx.font = '20px Courier New';
+    ctx.fillText('Pressione espaço para jogar novamente.', 200, ALTURA / 2 + 100)
 }
 
 function desenhaNomePlayer() {

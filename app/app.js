@@ -55,6 +55,7 @@ io.on('connection', function(socket){
                     io.emit('INICIAR', '');
 
                     setTimeout(function () {
+                        engine.setPlayers(p1, p2);
                         engine.start(io);
                     }, 2000);
                 }, 1000);
@@ -92,6 +93,12 @@ io.on('connection', function(socket){
                 engine.downP2();
             }
         }
+    });
+
+    socket.on('RESET', function(){
+        engine.setStatus('ESPERANDO');
+        engine.setDefault();
+        socket.emit('RESET_PARAMS', engine.getRenderParams());
     });
 });
 
