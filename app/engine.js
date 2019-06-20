@@ -44,7 +44,30 @@ class Engine {
     }
 
     getInitParams(){
-        return this;
+        return {
+            ALTURA: this.ALTURA,
+            LARGURA: this.LARGURA,
+
+            ALTURA_PLAYER: this.ALTURA_PLAYER,
+            LARGURA_PLAYER: this.LARGURA_PLAYER,
+            X_PLAYER: this.X_PLAYER,
+
+            TAMANHO_BOLA: this.TAMANHO_BOLA,
+
+            ALTURA_PONTUACAO: this.ALTURA_PONTUACAO,
+
+            ALTURA_TRACO: this.ALTURA_TRACO,
+            LARGURA_TRACO : this.LARGURA_TRACO,
+
+            player1Y: this.player1Y,
+            player2Y: this.player2Y,
+
+            pontuacaoP1: this.pontuacaoP1,
+            pontuacaoP2: this.pontuacaoP2,
+
+            bolaX: this.bolaX,
+            bolaY: this.bolaY,
+        };
     }
 
     getRandomAngulo(min, max) {
