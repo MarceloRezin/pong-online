@@ -32,7 +32,8 @@ var enumStatus = {
   ESPERANDO: 'ESPERANDO',
   INICIANDO: 'INICIANDO',
   JOGANDO: 'JOGANDO',
-  FIM: 'FIM'
+  FIM: 'FIM',
+  FILA_ESPERA: 'FILA_ESPERA',
 };
 
 var status;
@@ -40,6 +41,7 @@ var status;
 var IS_P1;
 var vitoriaP1;
 
+var estaNaFila;
 
 var loader = [
   [PRETO, '#28292f', '#28292f', '#28292f'],
@@ -78,7 +80,12 @@ socket.on('INIT_PARAMS', function (params) {
 
     IS_P1 = params.isP1;
 
-    status = enumStatus.ESPERANDO;
+    if(params.entrouNaFila){
+        status = enumStatus.FILA_ESPERA;
+        estaNaFila = true;
+    }else{
+        status = enumStatus.ESPERANDO;
+    }
 
     init();
     render();
@@ -231,39 +238,49 @@ function desenhaFimScreen() {
     ctx.font = '30px Courier New';
     ctx.fillText('Fim da partida!', 280, ALTURA / 2);
 
-    if(vitoriaP1 != null){
-        if(vitoriaP1){
-            if(IS_P1){
-                ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+    if(!estaNaFila){
+        if(vitoriaP1 != null){
+            if(vitoriaP1){
+                if(IS_P1){
+                    ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+                }else{
+                    ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+                }
             }else{
-                ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+                if(IS_P1){
+                    ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+                }else{
+                    ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+                }
             }
         }else{
-            if(IS_P1){
-                ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
-            }else{
-                ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
-            }
+            ctx.fillText('O outro player desistiu do jogo.', 120, ALTURA / 2 + 50);
         }
-    }else{
-        ctx.fillText('O outro player desistiu do jogo.', 120, ALTURA / 2 + 50);
-    }
 
-    ctx.font = '20px Courier New';
-    ctx.fillText('Pressione espaço para jogar novamente.', 200, ALTURA / 2 + 100)
+        ctx.font = '20px Courier New';
+        ctx.fillText('Pressione espaço para jogar novamente.', 200, ALTURA / 2 + 100)
+    }else{
+        ctx.font = '20px Courier New';
+        ctx.fillText('Aguardando os outros jogadores iniciarem uma nova partida.', 55, ALTURA / 2 + 50);
+    }
 }
 
 function desenhaNomePlayer() {
     ctx.font = '25px Courier New';
 
     let player;
-    if(IS_P1){
-        player = 'Player 1';
+
+    if(estaNaFila){
+        player = 'Telespectador'
     }else{
-        player = 'Player 2';
+        if(IS_P1){
+            player = '  Player 1';
+        }else{
+            player = '  Player 2';
+        }
     }
 
-    ctx.fillText(player, LARGURA / 2  - 50, ALTURA - 10);
+    ctx.fillText(player, LARGURA / 2  - 90, ALTURA - 10);
 }
 
 function render() {

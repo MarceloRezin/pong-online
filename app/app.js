@@ -14,6 +14,7 @@ app.get('/', function(req, res){
 
 let p1 = {};
 let p2 = {};
+let filaEspera = []; //Players aguardando para jogar
 
 function getPlayerById(id){
     if(p1.id === id){
@@ -31,6 +32,7 @@ io.on('connection', function(socket){
     let timeoutInit = null;
     let timeoutStart = null;
 
+    let entrouNaFila = false;
     if(!p1.id || !p2.id){
         if(p1.id){
             p2.id = id;
@@ -38,10 +40,18 @@ io.on('connection', function(socket){
             p1.id = id;
             isP1 = true;
         }
+    }else{
+        filaEspera.push({id: id});
+        entrouNaFila = true;
     }
 
     let params = engine.getInitParams();
-    params.isP1 = isP1;
+
+    if(entrouNaFila){
+        params.entrouNaFila = entrouNaFila;
+    }else{
+        params.isP1 = isP1;
+    }
     socket.emit('INIT_PARAMS', params);
 
     socket.on('CONFIRM_INIT', function () {
