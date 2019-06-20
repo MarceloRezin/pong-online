@@ -111,6 +111,7 @@ socket.on('RENDER', function (params) {
 
 socket.on('RESET_PARAMS', function (params) {
     setRenderParams(params);
+    status = 'ESPERANDO';
     socket.emit('CONFIRM_INIT', 'true');
 });
 
