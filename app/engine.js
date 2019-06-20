@@ -1,11 +1,10 @@
 class Engine {
 
-    constructor(){
+    constructor(io){
         this.setDefault();
-
         this.VELOCIDADE_BOLA = 20;
         this.PASSO_PLAYER = 60;
-        this.status = 'ESPERANDO';
+        this.io = io;
     }
 
     getStatus(){
@@ -31,7 +30,6 @@ class Engine {
         this.ALTURA_TRACO = 10;
         this.LARGURA_TRACO = 3.5;
 
-
         this.player1Y = (this.ALTURA / 2) - (this.ALTURA_PLAYER / 2);
         this.player2Y = (this.ALTURA / 2) - (this.ALTURA_PLAYER / 2);
 
@@ -41,6 +39,8 @@ class Engine {
         this.vitoriaP1 = null;
 
         this.resetBola();
+
+        this.status = 'ESPERANDO';
     }
 
     getInitParams(){
@@ -93,18 +93,9 @@ class Engine {
         return raio * Math.sin( angulo * Math.PI/180 );
     }
 
-    toRaioCartesiano(x, y){
-        return Math.sqrt((x * x) + (y*y));
-    }
-
-    toAnguloCartesiano(x, y){
-        return Math.atan2( y , x ) * 180.0/Math.PI;
-    }
-
-
-    start(io){
-        this.io = io;
+    start(){
         this.io.emit('JOGAR', '');
+        this.status = 'JOGANDO';
 
         this.MAIN_LOOP = setInterval(this.render.bind(this), 50);
     }
@@ -220,13 +211,17 @@ class Engine {
         }
 
         if(fim){
-            this.status = "FIM";
-            clearInterval(this.MAIN_LOOP);
-            this.io.emit('FIM', {vitoriaP1: this.vitoriaP1});
+            this.finalizaPartida();
 
             this.p1.init = false;
             this.p2.init = false;
         }
+    }
+
+    finalizaPartida(){
+        this.status = "FIM";
+        clearInterval(this.MAIN_LOOP);
+        this.io.emit('FIM', {vitoriaP1: this.vitoriaP1});
     }
 
     setPlayers(p1, p2){

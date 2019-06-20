@@ -35,7 +35,7 @@ var enumStatus = {
   FIM: 'FIM'
 };
 
-var status = enumStatus.ESPERANDO;
+var status;
 
 var IS_P1;
 var vitoriaP1;
@@ -77,6 +77,8 @@ socket.on('INIT_PARAMS', function (params) {
     bolaY = params.bolaY;
 
     IS_P1 = params.isP1;
+
+    status = enumStatus.ESPERANDO;
 
     init();
     render();
@@ -229,18 +231,22 @@ function desenhaFimScreen() {
     ctx.font = '30px Courier New';
     ctx.fillText('Fim da partida!', 280, ALTURA / 2);
 
-    if(vitoriaP1){
-        if(IS_P1){
-            ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+    if(vitoriaP1 != null){
+        if(vitoriaP1){
+            if(IS_P1){
+                ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+            }else{
+                ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+            }
         }else{
-            ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+            if(IS_P1){
+                ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
+            }else{
+                ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
+            }
         }
     }else{
-        if(IS_P1){
-            ctx.fillText('Você perdeu!', 300, ALTURA / 2 + 50);
-        }else{
-            ctx.fillText('Você Venceu!', 300, ALTURA / 2 + 50);
-        }
+        ctx.fillText('O outro player desistiu do jogo.', 120, ALTURA / 2 + 50);
     }
 
     ctx.font = '20px Courier New';

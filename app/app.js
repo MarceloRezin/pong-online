@@ -4,7 +4,7 @@ const http = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(http);
 const engines= require('./engine').Engine;
-const engine = new engines();
+const engine = new engines(io);
 
 app.use(express.static('public'));
 
@@ -26,10 +26,10 @@ function getPlayerById(id){
 }
 
 io.on('connection', function(socket){
-    console.log('con');
-
     let id = socket.id;
     let isP1 = false;
+    let timeoutInit = null;
+    let timeoutStart = null;
 
     if(!p1.id || !p2.id){
         if(p1.id){
@@ -51,12 +51,13 @@ io.on('connection', function(socket){
             player.init = true;
 
             if(p1.init === true && p2.init === true){
-                setTimeout(function () {
+                timeoutInit = setTimeout(function () {
                     io.emit('INICIAR', '');
+                    engine.setStatus('INICIANDO');
 
-                    setTimeout(function () {
+                    timeoutStart = setTimeout(function () {
                         engine.setPlayers(p1, p2);
-                        engine.start(io);
+                        engine.start();
                     }, 2000);
                 }, 1000);
             }
@@ -64,10 +65,22 @@ io.on('connection', function(socket){
     });
 
     socket.on('disconnect', function(){
-        // console.log('user disconnected');
+        if(timeoutInit){
+            clearTimeout(timeoutInit)
+        }
+
+        if(timeoutStart){
+            clearTimeout(timeoutStart);
+        }
 
         let player = getPlayerById(id);
         if(player != null){
+
+            let status = engine.getStatus();
+            if(status !== 'ESPERANDO'){
+                engine.finalizaPartida();
+            }
+
             player.init = false;
             player.id = null;
         }
@@ -76,7 +89,7 @@ io.on('connection', function(socket){
     socket.on('UP', function(){
         let player = getPlayerById(id);
         if(player != null){
-            if(player.id == p1.id){
+            if(player.id === p1.id){
                 engine.upP1();
             }else{
                 engine.upP2();
@@ -87,7 +100,7 @@ io.on('connection', function(socket){
     socket.on('DOWN', function(){
         let player = getPlayerById(id);
         if(player != null){
-            if(player.id == p1.id){
+            if(player.id === p1.id){
                 engine.downP1();
             }else{
                 engine.downP2();
@@ -103,5 +116,5 @@ io.on('connection', function(socket){
 });
 
 http.listen(9001, function(){
-    console.log('listening on *:9001');
+    console.log('Server iniciado na porta 9001');
 });
