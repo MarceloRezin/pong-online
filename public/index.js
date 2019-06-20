@@ -102,6 +102,14 @@ socket.on('JOGAR', function () {
     status = enumStatus.JOGANDO;
 });
 
+socket.on('SAI_FILA', function (params) {
+    estaNaFila = false;
+    IS_P1 = params.isP1;
+    status = params.status;
+
+    render();
+});
+
 function setRenderParams(params){
     bolaX = params.bolaX;
     bolaY = params.bolaY;
@@ -145,7 +153,7 @@ function init(){
         }else if(e.keyCode === 40){
             socket.emit('DOWN', '');
         }else if(e.keyCode === 32){
-            if(status === enumStatus.FIM){
+            if(status === enumStatus.FIM && !estaNaFila){
                 socket.emit('RESET', '');
             }
         }

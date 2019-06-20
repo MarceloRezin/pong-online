@@ -26,6 +26,18 @@ function getPlayerById(id){
     }
 }
 
+function getPosPlayerAguardandoById(id){
+    if(filaEspera.length){
+        for(let i=0; i<filaEspera.length; i++){
+            if(filaEspera[i] === id){
+                return i;
+            }
+        }
+    }
+
+    return null
+}
+
 io.on('connection', function(socket){
     let id = socket.id;
     let isP1 = false;
@@ -41,7 +53,7 @@ io.on('connection', function(socket){
             isP1 = true;
         }
     }else{
-        filaEspera.push({id: id});
+        filaEspera.push(id);
         entrouNaFila = true;
     }
 
@@ -85,14 +97,33 @@ io.on('connection', function(socket){
 
         let player = getPlayerById(id);
         if(player != null){
-
             let status = engine.getStatus();
             if(status !== 'ESPERANDO'){
                 engine.finalizaPartida();
             }
 
             player.init = false;
-            player.id = null;
+
+            if(filaEspera.length){
+                let prox = filaEspera.shift();
+
+                if(player.id === p1.id){ //Removido foi o P1
+                    p1.id = prox;
+                    isP1 = true;
+                }else{
+                    p2.id = prox;
+                    isP1 = false;
+                }
+
+                io.to(prox).emit('SAI_FILA', {isP1: isP1, status: 'FIM'});
+            }else{
+                player.id = null;
+            }
+        }else{
+            let i = getPosPlayerAguardandoById(id);
+            if(i != null){
+                filaEspera.splice(i, 1);
+            }
         }
     });
 
