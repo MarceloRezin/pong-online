@@ -2,7 +2,7 @@
 Implementação online do jogo pong para disciplina de redes.
 
 **Tecnologias utilizadas:**  
-- Seridor: [NodeJS](https://nodejs.org/en/)  
+- Servidor: [NodeJS](https://nodejs.org/en/)  
 - Gráficos: [HTML5 Canvas](https://developer.mozilla.org/pt-BR/docs/Web/Guide/HTML/Canvas_tutorial)  
 - Socket: [Socket.IO](https://socket.io/)
 
